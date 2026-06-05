@@ -35,11 +35,6 @@ app.add_middleware(
 )
 
 
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
-
-
 @app.post("/score", response_model=ScoreResponse)
 def score(payload: ScoreRequest) -> ScoreResponse:
     request_id = str(uuid4())
