@@ -284,11 +284,7 @@ npm run build
 - The frontend is minimal so the main focus stays on correctness, validation, integration, logging, and tests.
 - Docker was skipped to keep the submission focused on the requested implementation and because Docker was explicitly excluded for this version.
 
-## Time-Box Details
 
-- Start time (IST): 2026-06-05 22:01
-- End time (IST): 2026-06-05 22:18
-- Approximate total time spent: 18 minutes
 
 ## Completed
 
@@ -308,7 +304,7 @@ npm run build
 
 ## Skipped
 
-- Docker/docker-compose, intentionally excluded.
+- Docker/docker-compose, intentionally excluded because i dont have it installed locally.
 - Authentication, because it is outside the PDF scope.
 - Production deployment setup, because it is outside the PDF scope.
 - Trained ML model, because the PDF states that simple rule-based scoring is acceptable.
