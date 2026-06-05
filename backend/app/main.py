@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from uuid import uuid4
 
@@ -15,7 +17,14 @@ from app.scoring import calculate_score
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("score_audit")
 
-app = FastAPI(title="Arbix AI Scoring API")
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    init_db()
+    yield
+
+
+app = FastAPI(title="Arbix AI Scoring API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,11 +33,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-def startup() -> None:
-    init_db()
 
 
 @app.get("/health")
