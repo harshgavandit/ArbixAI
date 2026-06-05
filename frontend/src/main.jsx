@@ -37,6 +37,8 @@ function App() {
   function updateField(event) {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
+    setResult(null);
+    setError("");
   }
 
   async function submitScore(event) {
