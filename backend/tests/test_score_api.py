@@ -1,4 +1,4 @@
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient # pyright: ignore[reportMissingImports]
 
 from app.database import get_connection, init_db
 from app.main import app

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator  # type: ignore[import]
 
 IncomeBand = Literal["<2L", "2-5L", "5-10L", ">10L"]
 
