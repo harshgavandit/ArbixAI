@@ -26,7 +26,7 @@ This project used Codex as an implementation assistant. LLM usage was limited to
 - Confirmed that `GET /drift` is the only extra endpoint and is included because it is a listed bonus item.
 - Confirmed that Docker/docker-compose is not included.
 - Removed generated local artifacts such as `.venv`, `node_modules`, build output, caches, and local SQLite data.
-- Removed an unnecessary `/health` endpoint to keep the API surface aligned with the PDF.
+
 
 ## Example Improvement After Reviewing Tool Output
 
