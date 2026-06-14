@@ -6,13 +6,15 @@ from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from fastapi import FastAPI  # type: ignore[reportMissingImports]
-from fastapi.middleware.cors import CORSMiddleware  # type: ignore[reportMissingImports]
+from fastapi import FastAPI  # type: ignore
+from fastapi.middleware.cors import CORSMiddleware   # type: ignore
 
 from app.database import init_db, save_score_request
 from app.drift import get_drift
 from app.models import DriftResponse, ScoreRequest, ScoreResponse
 from app.scoring import calculate_score
+
+SCORING_VERSION = "1.0"
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("score_audit")
@@ -44,6 +46,7 @@ def score(payload: ScoreRequest) -> ScoreResponse:
     response = ScoreResponse(
         request_id=request_id,
         score=score_value,
+        scoring_version=SCORING_VERSION,
         reason_codes=reason_codes,
         timestamp=timestamp,
     )
@@ -57,6 +60,7 @@ def score(payload: ScoreRequest) -> ScoreResponse:
         annual_income_band=payload.annual_income_band,
         score=score_value,
         reason_codes=reason_codes,
+        scoring_version=SCORING_VERSION,
     )
 
     logger.info(
@@ -69,6 +73,7 @@ def score(payload: ScoreRequest) -> ScoreResponse:
             "repayment_history_score": payload.repayment_history_score,
             "annual_income_band": payload.annual_income_band,
             "score": score_value,
+            "scoring_version": SCORING_VERSION,
             "reason_codes": reason_codes,
         }
     )
@@ -79,3 +84,8 @@ def score(payload: ScoreRequest) -> ScoreResponse:
 @app.get("/drift", response_model=DriftResponse)
 def drift() -> DriftResponse:
     return get_drift()
+
+
+@app.get("/health")
+def health() -> dict[str, str]:
+    return {"status": "healthy", "version": SCORING_VERSION}
