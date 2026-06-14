@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from math import isfinite
+from typing import TypeAlias
 
 from app.models import ScoreRequest
 
+ReasonCode: TypeAlias = str
 INCOME_POINTS = {
     "<2L": 4,
     "2-5L": 10,
@@ -17,7 +19,7 @@ def clamp_score(value: float) -> float:
     return round(max(0, min(100, value)), 2)
 
 
-def calculate_score(payload: ScoreRequest) -> tuple[float, list[str]]:
+def calculate_score(payload: ScoreRequest) -> tuple[float, list[ReasonCode]]:
     """Calculate credit score based on repayment history, land area, and income band.
 
     Returns tuple of (score: float, reason_codes: list[str])."""
