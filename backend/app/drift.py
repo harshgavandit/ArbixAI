@@ -22,6 +22,7 @@ BASELINE_REPAYMENT = {
 
 
 def psi_status(value: float) -> str:
+    """Determine drift status based on PSI value."""
     if value >= 0.25:
         return "drift_detected"
     if value >= 0.10:
@@ -30,6 +31,7 @@ def psi_status(value: float) -> str:
 
 
 def calculate_psi(actual_counts: Counter[str], baseline: dict[str, float]) -> float:
+    """Calculate Population Stability Index (PSI) for drift detection."""
     total = sum(actual_counts.values())
     if total == 0:
         return 0.0
@@ -45,11 +47,13 @@ def calculate_psi(actual_counts: Counter[str], baseline: dict[str, float]) -> fl
 
 
 def drift_metric(actual_counts: Counter[str], baseline: dict[str, float]) -> DriftMetric:
+    """Calculate drift metric with PSI and status."""
     psi = calculate_psi(actual_counts, baseline)
     return DriftMetric(psi=psi, status=psi_status(psi))
 
 
 def get_drift(limit: int = 100) -> DriftResponse:
+    """Get drift metrics for recent score requests."""
     rows = fetch_recent_scores(limit=limit)
     income_counts: Counter[str] = Counter(row["annual_income_band"] for row in rows)
     repayment_counts: Counter[str] = Counter(
