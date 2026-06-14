@@ -163,3 +163,47 @@ def test_income_band_normalization() -> None:
             (request_id,),
         ).fetchone()
     assert row["annual_income_band"] == "2-5L"
+
+
+def test_health_check_includes_version() -> None:
+    response = client.get("/health")
+    assert response.status_code == 200
+    body = response.json()
+    assert "version" in body
+    assert body["status"] == "healthy"
+
+
+def test_security_headers_present() -> None:
+    response = client.get("/health")
+    assert "X-Content-Type-Options" in response.headers
+    assert response.headers["X-Content-Type-Options"] == "nosniff"
+    assert "X-Frame-Options" in response.headers
+    assert response.headers["X-Frame-Options"] == "DENY"
+
+
+def test_score_response_includes_all_fields() -> None:
+    response = client.post(
+        "/score",
+        json={
+            "land_area_acres": 3.5,
+            "crop_type": "wheat",
+            "repayment_history_score": 82,
+            "annual_income_band": "2-5L",
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert "request_id" in body
+    assert "score" in body
+    assert "scoring_version" in body
+    assert "reason_codes" in body
+    assert "timestamp" in body
+
+
+def test_drift_with_empty_database() -> None:
+    with get_connection() as connection:
+        connection.execute("DELETE FROM score_requests")
+    response = client.get("/drift")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["record_count"] == 0
