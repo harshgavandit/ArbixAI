@@ -9,6 +9,7 @@ from uuid import uuid4
 
 from fastapi import FastAPI  # type: ignore
 from fastapi.middleware.cors import CORSMiddleware   # type: ignore
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.database import init_db, save_score_request
 from app.drift import get_drift
@@ -23,6 +24,15 @@ logging.basicConfig(level=getattr(logging, LOG_LEVEL), format="%(message)s")
 logger = logging.getLogger("score_audit")
 
 
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        return response
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     init_db()
@@ -31,6 +41,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(title="Arbix AI Scoring API", lifespan=lifespan)
 
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origin.strip() for origin in CORS_ORIGINS],
