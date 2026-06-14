@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
@@ -14,9 +15,11 @@ from app.drift import get_drift
 from app.models import DriftResponse, ScoreRequest, ScoreResponse
 from app.scoring import calculate_score
 
-SCORING_VERSION = "1.0"
+SCORING_VERSION = os.getenv("SCORING_VERSION", "1.0")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
 
-logging.basicConfig(level=logging.INFO, format="%(message)s")
+logging.basicConfig(level=getattr(logging, LOG_LEVEL), format="%(message)s")
 logger = logging.getLogger("score_audit")
 
 
@@ -30,7 +33,7 @@ app = FastAPI(title="Arbix AI Scoring API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[origin.strip() for origin in CORS_ORIGINS],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
