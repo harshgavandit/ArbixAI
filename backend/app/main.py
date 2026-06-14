@@ -107,3 +107,8 @@ def drift() -> DriftResponse:
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "healthy", "version": SCORING_VERSION}
+
+
+@app.options("/{path:path}")
+def preflight_handler(path: str) -> dict[str, str]:
+    return {}
