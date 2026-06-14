@@ -18,6 +18,8 @@ class ScoreRequest(BaseModel):
         stripped = value.strip()
         if not stripped:
             raise ValueError("crop_type must be a non-empty string")
+        if len(stripped) > 100:
+            raise ValueError("crop_type must not exceed 100 characters")
         return stripped
 
     @field_validator("annual_income_band", mode="before")
@@ -31,6 +33,7 @@ class ScoreRequest(BaseModel):
 class ScoreResponse(BaseModel):
     request_id: str
     score: float
+    scoring_version: str = Field(min_length=1)
     reason_codes: list[str] = Field(min_length=3, max_length=3)
     timestamp: datetime
 
