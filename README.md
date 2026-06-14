@@ -261,8 +261,6 @@ Backend:
 cd backend
 .\.venv\Scripts\activate
 pytest
-ruff check .
-ruff format --check .
 ```
 
 Frontend:
@@ -319,7 +317,6 @@ I used Codex as an implementation assistant to:
 - run tests and checks
 - review alignment with the final codebase
 
-I personally reviewed the generated output, checked PDF alignment, removed extra generated files, removed an unnecessary `/health` endpoint, and verified that the remaining codebase is focused on the required scope plus the selected non-Docker bonus items.
 
 ## What I Would Improve With 2 More Hours
 
