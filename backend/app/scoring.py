@@ -13,10 +13,14 @@ INCOME_POINTS = {
 
 
 def clamp_score(value: float) -> float:
+    """Clamp score between 0-100 and round to 2 decimal places."""
     return round(max(0, min(100, value)), 2)
 
 
 def calculate_score(payload: ScoreRequest) -> tuple[float, list[str]]:
+    """Calculate credit score based on repayment history, land area, and income band.
+
+    Returns tuple of (score: float, reason_codes: list[str])."""
     repayment_component = payload.repayment_history_score * 0.65
 
     if payload.land_area_acres < 1:
@@ -51,6 +55,7 @@ def calculate_score(payload: ScoreRequest) -> tuple[float, list[str]]:
 
 
 def bucket_repayment_score(score: float) -> str:
+    """Bucket repayment score into ranges for drift analysis."""
     if not isfinite(score):
         return "invalid"
     if score < 50:
