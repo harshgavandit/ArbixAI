@@ -55,8 +55,27 @@ function App() {
     setShowSuccess(false);
   }
 
+  function validateForm() {
+    if (!form.land_area_acres || form.land_area_acres <= 0) {
+      setError("Land area must be greater than 0");
+      return false;
+    }
+    if (!form.crop_type || form.crop_type.trim() === "") {
+      setError("Crop type is required");
+      return false;
+    }
+    if (form.repayment_history_score < 0 || form.repayment_history_score > 100) {
+      setError("Repayment score must be between 0 and 100");
+      return false;
+    }
+    return true;
+  }
+
   async function submitScore(event) {
     event.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     setLoading(true);
     setError("");
     setResult(null);
