@@ -25,6 +25,12 @@ function formatError(errorBody) {
       .join(" ");
   }
 
+// Example: 
+// [
+//   { loc: ["body", "land_area_acres"], msg: "Input should be greater than 0" }
+// ]
+// becomes: "land_area_acres: Input should be greater than 0"
+
   return String(errorBody.detail);
 }
 
@@ -33,12 +39,20 @@ function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   function updateField(event) {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
     setResult(null);
     setError("");
+  }
+
+  function resetForm() {
+    setForm(initialForm);
+    setResult(null);
+    setError("");
+    setShowSuccess(false);
   }
 
   async function submitScore(event) {
@@ -65,6 +79,8 @@ function App() {
       }
 
       setResult(body);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
     } catch (caughtError) {
       setError(caughtError.message || "Unable to reach the scoring service.");
     } finally {
@@ -81,33 +97,38 @@ function App() {
         </div>
 
         <form className="score-form" onSubmit={submitScore}>
-          <label>
+          <label htmlFor="land_area_acres">
             Land area in acres
             <input
+              id="land_area_acres"
               name="land_area_acres"
               type="number"
               min="0.01"
               step="0.01"
               value={form.land_area_acres}
               onChange={updateField}
+              aria-label="Land area in acres"
               required
             />
           </label>
 
-          <label>
+          <label htmlFor="crop_type">
             Crop type
             <input
+              id="crop_type"
               name="crop_type"
               type="text"
               value={form.crop_type}
               onChange={updateField}
+              aria-label="Crop type"
               required
             />
           </label>
 
-          <label>
+          <label htmlFor="repayment_history_score">
             Repayment history score
             <input
+              id="repayment_history_score"
               name="repayment_history_score"
               type="number"
               min="0"
@@ -115,16 +136,19 @@ function App() {
               step="1"
               value={form.repayment_history_score}
               onChange={updateField}
+              aria-label="Repayment history score (0-100)"
               required
             />
           </label>
 
-          <label>
+          <label htmlFor="annual_income_band">
             Annual income band
             <select
+              id="annual_income_band"
               name="annual_income_band"
               value={form.annual_income_band}
               onChange={updateField}
+              aria-label="Annual income band"
             >
               <option value="<2L">&lt;2L</option>
               <option value="2–5L">2–5L</option>
@@ -133,12 +157,19 @@ function App() {
             </select>
           </label>
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Scoring..." : "Calculate score"}
-          </button>
+          <div className="button-group">
+            <button type="submit" disabled={loading}>
+              {loading ? "Scoring..." : "Calculate score"}
+            </button>
+            <button type="button" onClick={resetForm} disabled={loading}>
+              Reset
+            </button>
+          </div>
         </form>
 
         {error ? <div className="message error">{error}</div> : null}
+
+        {showSuccess ? <div className="message success">Score calculated successfully!</div> : null}
 
         {result ? (
           <section className="result">
