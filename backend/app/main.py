@@ -89,6 +89,7 @@ def score(payload: ScoreRequest) -> ScoreResponse:
             "score": score_value,
             "scoring_version": SCORING_VERSION,
             "reason_codes": reason_codes,
+            "event_type": "success",
         }
     )
 
