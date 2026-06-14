@@ -7,10 +7,10 @@ IncomeBand = Literal["<2L", "2-5L", "5-10L", ">10L"]
 
 
 class ScoreRequest(BaseModel):
-    land_area_acres: float = Field(gt=0)
-    crop_type: str = Field(min_length=1)
-    repayment_history_score: float = Field(ge=0, le=100)
-    annual_income_band: IncomeBand
+    land_area_acres: float = Field(gt=0, description="Land area in acres, must be greater than 0")
+    crop_type: str = Field(min_length=1, description="Type of crop being cultivated")
+    repayment_history_score: float = Field(ge=0, le=100, description="Credit score from 0 to 100")
+    annual_income_band: IncomeBand = Field(description="Annual income range classification")
 
     @field_validator("crop_type")
     @classmethod
