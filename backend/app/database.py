@@ -24,7 +24,12 @@ def get_connection() -> sqlite3.Connection:
 
 
 def init_db() -> None:
-    """Initialize database schema if not exists."""
+    """Initialize database schema if not exists.
+
+    Note: SQLite in-memory databases should be used only for testing.
+    Production deployments should use file-based or networked databases
+    with proper access controls and backup strategies.
+    """
     db_path = get_db_path()
     db_path.parent.mkdir(parents=True, exist_ok=True)
     try:
