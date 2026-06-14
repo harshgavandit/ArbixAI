@@ -101,9 +101,21 @@ button:disabled {
   opacity: 0.7;
 }
 
-.message,
-.result {
+.button-group {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.button-group button {
+  grid-column: auto;
+}
+
+.message {
   margin-top: 20px;
+  border-radius: 6px;
+  padding: 12px;
 }
 
 .error {
@@ -114,7 +126,28 @@ button:disabled {
   background: #fff0ef;
 }
 
+.success {
+  border: 1px solid #a8d8d8;
+  border-radius: 6px;
+  padding: 12px;
+  color: #0f6b5c;
+  background: #e0f5ef;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .result {
+  margin-top: 20px;
   border-top: 1px solid #e4e7eb;
   padding-top: 20px;
 }
