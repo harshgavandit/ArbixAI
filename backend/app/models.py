@@ -27,7 +27,11 @@ class ScoreRequest(BaseModel):
     def normalize_income_band(cls, value: str) -> str:
         if not isinstance(value, str):
             return value
-        return value.strip().replace("–", "-")
+        normalized = value.strip().replace("–", "-")
+        valid_bands = {"<2L", "2-5L", "5-10L", ">10L"}
+        if normalized not in valid_bands:
+            raise ValueError(f"Invalid income band. Must be one of: {', '.join(valid_bands)}")
+        return normalized
 
 
 class ScoreResponse(BaseModel):
